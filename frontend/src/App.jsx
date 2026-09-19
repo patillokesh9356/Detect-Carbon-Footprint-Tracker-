@@ -668,6 +668,17 @@ function App() {
       </div>
 
     </div>
+    <footer style={{
+      textAlign: "center",
+      padding: "16px",
+      marginTop: "32px",
+      color: "#888",
+      fontSize: "14px",
+      borderTop: "1px solid #e0e0e0"
+    }}>
+      Developed by <strong>Lokesh Patil</strong>
+    </footer>
+  </div>
   );
 }
 
