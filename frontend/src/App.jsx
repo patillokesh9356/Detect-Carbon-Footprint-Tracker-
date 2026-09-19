@@ -37,6 +37,7 @@ function App() {
   const [password, setPassword] = useState("");
 
   const [authMessage, setAuthMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loggedUser, setLoggedUser] = useState(null);
 
@@ -96,6 +97,9 @@ function App() {
       return;
     }
 
+    setIsLoading(true);
+    setAuthMessage("Connecting to server, please wait...");
+
     try {
       const response = await fetch(`${API}/login`, {
         method: "POST",
@@ -111,17 +115,18 @@ function App() {
       const data = await response.json();
 
       if (response.ok) {
+        setIsLoading(false);
         setIsLoggedIn(true);
         setLoggedUser(data);
-
         setAuthMessage("");
         setPassword("");
-
         setEmail("");
       } else {
+        setIsLoading(false);
         setAuthMessage(data.error);
       }
     } catch (error) {
+      setIsLoading(false);
       setAuthMessage("Backend server is not running.");
     }
   };
@@ -135,6 +140,9 @@ function App() {
       setAuthMessage("Please fill all fields.");
       return;
     }
+
+    setIsLoading(true);
+    setAuthMessage("Creating your account, please wait...");
 
     try {
       const response = await fetch(`${API}/register`, {
@@ -152,17 +160,18 @@ function App() {
       const data = await response.json();
 
       if (response.ok) {
+        setIsLoading(false);
         setAuthMessage("Registration successful! Please login.");
-
         setName("");
         setEmail("");
         setPassword("");
-
         setShowRegister(false);
       } else {
+        setIsLoading(false);
         setAuthMessage(data.error);
       }
     } catch (error) {
+      setIsLoading(false);
       setAuthMessage("Backend server is not running.");
     }
   };
@@ -434,8 +443,8 @@ function App() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <button className="auth-button" onClick={handleRegister}>
-                Register
+              <button className="auth-button" onClick={handleRegister} disabled={isLoading}>
+                {isLoading ? "⏳ Please wait..." : "Register"}
               </button>
 
               <p className="switch-text">
@@ -469,8 +478,8 @@ function App() {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              <button className="auth-button" onClick={handleLogin}>
-                Login
+              <button className="auth-button" onClick={handleLogin} disabled={isLoading}>
+                {isLoading ? "⏳ Please wait..." : "Login"}
               </button>
 
               <p className="switch-text">
