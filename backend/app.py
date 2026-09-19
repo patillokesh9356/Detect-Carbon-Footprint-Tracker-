@@ -6,6 +6,7 @@ import datetime
 # from db import get_db_connection
 from supabase_client import supabase
 from emission_factors import calculate_emission
+from suggestions import get_suggestions
 
 
 app = Flask(__name__)
@@ -23,6 +24,20 @@ CORS(app, origins=[
 @app.route("/")
 def home():
     return "Carbon Tracker Backend + MySQL Connected Successfully"
+
+
+# =========================
+# GET SUGGESTIONS
+# =========================
+
+@app.route("/suggestions/<category>", methods=["GET"])
+def suggestions(category):
+    result = get_suggestions(category)
+    return jsonify({
+        "category": category,
+        "impact": result["impact"],
+        "tips": result["tips"]
+    }), 200
 
 
 # =========================
@@ -113,7 +128,8 @@ def add_activity():
         return jsonify({
             "message": "Activity added successfully",
             "emission": emission,
-            "unit": "kg CO2e"
+            "unit": "kg CO2e",
+            "suggestions": get_suggestions(category)
         }), 201
 
     except Exception as e:

@@ -73,6 +73,11 @@ function App() {
   const [goals, setGoals] = useState([]);
 
   // =========================
+  // SUGGESTIONS STATE
+  // =========================
+  const [suggestions, setSuggestions] = useState(null);
+
+  // =========================
   // GOAL FORM STATES
   // =========================
   const [targetReduction, setTargetReduction] = useState("");
@@ -325,6 +330,11 @@ function App() {
 
         setValue("");
 
+        // Set suggestions from backend response
+        if (data.suggestions) {
+          setSuggestions({ ...data.suggestions, category });
+        }
+
         getTotalEmission(loggedUser.user_id);
         getMonthlyEmission(loggedUser.user_id);
         getActivities(loggedUser.user_id);
@@ -566,6 +576,38 @@ function App() {
         </button>
 
         {result && <div className="result">{result}</div>}
+
+        {/* =========================
+            SMART REDUCTION SUGGESTIONS
+            ========================= */}
+        {suggestions && (
+          <div className="suggestions-section">
+            <h3 className="suggestions-title">
+              💡 What Can You Do Next?
+            </h3>
+
+            <div className="suggestions-impact">
+              <span className="impact-icon">🌍</span>
+              <p>{suggestions.impact}</p>
+            </div>
+
+            <div className="suggestions-grid">
+              {suggestions.tips.map((tip, index) => (
+                <div className="suggestion-card" key={index}>
+                  <span className="suggestion-icon">{tip.icon}</span>
+                  <p className="suggestion-text">{tip.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <button
+              className="dismiss-button"
+              onClick={() => setSuggestions(null)}
+            >
+              ✕ Dismiss
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="section">
